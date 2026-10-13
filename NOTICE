@@ -1,0 +1,10 @@
+Chess AI Game includes Stockfish.js 19.0.0, a WebAssembly build of Stockfish.
+
+Stockfish.js Copyright (c) 2026 Chess.com, LLC and contributors.
+Stockfish.js is licensed under the GNU General Public License, version 3 (GPL-3.0).
+
+This project uses the lite single-threaded engine files:
+- public/stockfish-19-lite-single.js
+- public/stockfish-19-lite-single.wasm
+
+See THIRD_PARTY_LICENSES.md for source and corresponding-source information.
