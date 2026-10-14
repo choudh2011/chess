@@ -1,4 +1,4 @@
-import { StockfishMoveProvider } from './stockfish-provider'
+import { getStockfishWorkerUrl, StockfishMoveProvider } from './stockfish-provider'
 
 class FakeWorker {
   messages: string[] = []
@@ -18,6 +18,10 @@ class FakeWorker {
 }
 
 describe('StockfishMoveProvider', () => {
+  it('resolves the engine within a GitHub Pages project path', () => {
+    expect(getStockfishWorkerUrl('/chess/')).toBe('/chess/stockfish-19-lite-single.js')
+  })
+
   it('configures a ready engine at the selected Elo and parses its best move', async () => {
     const worker = new FakeWorker()
     const provider = new StockfishMoveProvider(() => worker)

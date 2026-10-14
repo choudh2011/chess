@@ -7,6 +7,10 @@ interface EngineWorker {
 
 type WorkerFactory = () => EngineWorker
 
+export function getStockfishWorkerUrl(baseUrl: string): string {
+  return `${baseUrl}stockfish-19-lite-single.js`
+}
+
 interface PendingMove {
   requestId: number
   resolve: (move: AiMove) => void
@@ -19,7 +23,9 @@ export class StockfishMoveProvider implements AiMoveProvider {
   private resolveReady: (() => void) | undefined
   private pending: PendingMove | undefined
 
-  constructor(private readonly workerFactory: WorkerFactory = () => new Worker('/stockfish-19-lite-single.js')) {}
+  constructor(
+    private readonly workerFactory: WorkerFactory = () => new Worker(getStockfishWorkerUrl(import.meta.env.BASE_URL)),
+  ) {}
 
   async chooseMove(request: AiMoveRequest): Promise<AiMove> {
     const worker = this.ensureWorker()
