@@ -13,6 +13,8 @@ export function ChessGame({ state, isBoardInteractive, onMove }: ChessGameProps)
     ? 'Your turn'
     : state.phase === 'ai-thinking'
       ? 'AI is thinking'
+      : state.phase === 'review'
+        ? 'Review mode'
       : state.outcome ?? 'Game over'
 
   return (
@@ -28,12 +30,13 @@ export function ChessGame({ state, isBoardInteractive, onMove }: ChessGameProps)
         aria-label="Chess board"
         className="chessboard-shell"
         data-interactive={String(isBoardInteractive)}
+        data-orientation={state.playerColor}
       >
         <Chessboard
           options={{
             id: 'player-versus-ai-board',
             position: state.fen,
-            boardOrientation: 'white',
+            boardOrientation: state.playerColor,
             allowDragging: isBoardInteractive,
             showNotation: true,
             onPieceDrop: ({ sourceSquare, targetSquare }) => {

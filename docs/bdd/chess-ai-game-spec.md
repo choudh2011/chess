@@ -6,7 +6,7 @@ Players practise standard chess in a browser against a local AI labelled with on
 
 ## Scope
 
-- A player starts a standard chess game as White.
+- A player starts a standard chess game as either White or Black.
 - The player chooses an Estimated Elo strength before a new game.
 - Legal player moves are followed by one legal AI Black move.
 - Illegal moves leave position and turn unchanged.
@@ -66,6 +66,78 @@ Feature: Play a first move against an AI opponent
       And the game remains in the AI turn
 ```
 
+## Approved extension: player colour and PGN review
+
+```gherkin
+Feature: Review and export a game played from either side
+  To learn from completed or saved games
+  As a chess player
+  I want to choose my colour and review portable game records one move at a time
+
+  Rule: The player's selected colour controls board orientation and whose turn accepts input
+    Scenario: Player starts a game as Black
+      Given the player selected Black and an estimated Elo strength
+      When the player starts a new game
+      Then the board is oriented for Black
+      And the AI makes one legal White move
+      And the player may make a legal Black move when the AI turn ends
+
+  Rule: A live game record is shown in move order
+    Scenario: Player sees the moves after a completed turn
+      Given a game contains one White move and one Black move
+      When the player views the game record
+      Then the record shows both moves in chronological order
+      And the latest move is identified as the current position
+
+  Rule: A live game can be exported as a portable PGN record
+    Scenario: Player downloads a game record
+      Given a game contains legal moves
+      When the player downloads the record
+      Then a PGN file containing those moves is downloaded
+      And the PGN contains the basic game header information
+
+  Rule: An imported PGN is a read-only review
+    Scenario: Player imports a valid PGN
+      Given the player has a valid PGN game record
+      When the player uploads the record
+      Then the board shows the initial position of that record
+      And the moves are shown in chronological order
+      And the game is in review mode
+      And the player cannot make a chess move
+
+  Rule: A reviewer can move one recorded position at a time
+    Scenario: Player steps forward and backward through an imported game
+      Given an imported game contains at least two moves
+      And the review starts at the initial position
+      When the player advances one move
+      Then the board shows the position after the first move
+      And the first move is identified as current
+      When the player returns one move
+      Then the board shows the initial position
+
+  Rule: A finished live game can be reviewed without exporting and importing it
+    Scenario: Player reviews the game that just ended
+      Given a live game has reached a standard game-over state
+      When the player views the game record
+      Then first, previous, next, and last position controls are available
+      And the player can move from the final position to an earlier recorded position
+      And the board is read-only while an earlier position is displayed
+
+  Rule: An active game cannot be rewound
+    Scenario: Player views a game that has not ended
+      Given a live game is still in progress
+      When the player views the game record
+      Then no position-navigation controls are available
+      And the board remains at the current live position
+
+  Rule: Invalid imports do not replace the current game or review
+    Scenario: Player uploads an invalid game record
+      Given the player has a game or review open
+      When the player uploads an invalid PGN file
+      Then the open game or review remains unchanged
+      And the player sees an understandable import error
+```
+
 ## Technical decisions
 
 - React and TypeScript render the local browser UI.
@@ -73,8 +145,7 @@ Feature: Play a first move against an AI opponent
 - The game controller owns FEN, history, turn/phase, configured strength, and AI request identity.
 - AI executes behind an `AiMoveProvider` interface. A deterministic weak provider supports the first vertical slice; a Web Worker-backed Stockfish provider is used for engine-backed strengths.
 - Stockfish's current UCI Elo floor is 1320. Strengths 200–1200 therefore use a calibrated fallible-move selector; 1300–2200 use `UCI_LimitStrength` + `UCI_Elo`. The visible 1300 product level maps to Stockfish 1320 internally; the label remains an estimate, not an engine or Chess.org rating.
-- The application is local-only: no account, external AI API, rating service, multiplayer, persistence, or timer.
-- This project does not use Git or any source-code repository workflow.
+- The application is local-only: no account, external AI API, rating service, multiplayer, persistent saved games, or timer. PGN files are explicitly imported and exported by the player.
 - Any Stockfish distribution must include the required GPL-3.0 notices and complete corresponding-source offer/material appropriate to the chosen distribution method before publication.
 
 ## Logic diagrams
@@ -201,4 +272,4 @@ Plain meaning: restarting a game always wins over a slow AI response. The reques
 
 ## Non-goals for this plan
 
-- Player colour selection, timers, hints, analysis bar, saved games, online play, user accounts, leaderboard, or branded Chess.org/Chess.com integration.
+- Timers, hints, analysis bar, persistent saved games, online play, user accounts, leaderboard, or branded Chess.org/Chess.com integration.

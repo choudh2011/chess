@@ -18,4 +18,13 @@ describe('ChessGame', () => {
     expect(screen.getByText(/ai is thinking/i)).toBeVisible()
     expect(screen.getByLabelText(/chess board/i)).toHaveAttribute('data-interactive', 'false')
   })
+
+  it('orients the board for Black and labels read-only review mode', () => {
+    const state = { ...newGame(200, 'black'), mode: 'review' as const, phase: 'review' as const }
+
+    render(<ChessGame state={state} isBoardInteractive={false} onMove={vi.fn()} />)
+
+    expect(screen.getByText(/review mode/i)).toBeVisible()
+    expect(screen.getByLabelText(/chess board/i)).toHaveAttribute('data-orientation', 'black')
+  })
 })

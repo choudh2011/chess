@@ -42,11 +42,12 @@ main {
   display: grid;
   align-items: start;
   gap: 2rem;
-  grid-template-columns: minmax(15rem, 0.4fr) minmax(0, 1fr);
+  grid-template-columns: minmax(12rem, 0.3fr) minmax(0, 1fr) minmax(15rem, 0.38fr);
 }
 
 .new-game-panel,
-.game-panel {
+.game-panel,
+.record-panel {
   background: #fffdf7;
   border: 1px solid #d9d2c3;
   border-radius: 1rem;
@@ -57,6 +58,11 @@ main {
 .new-game-panel {
   display: grid;
   gap: 0.75rem;
+}
+
+.record-panel {
+  display: grid;
+  gap: 1rem;
 }
 
 select,
@@ -84,6 +90,11 @@ button:hover {
   background: #1f4a3f;
 }
 
+button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
 .game-heading {
   align-items: center;
   display: flex;
@@ -107,6 +118,89 @@ button:hover {
 
 .chessboard-shell[data-interactive="false"] {
   opacity: 0.76;
+}
+
+.record-heading {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.ply-status,
+.review-note,
+.empty-record {
+  color: #4b5563;
+  margin: 0;
+}
+
+.move-list {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  list-style: none;
+  margin: 0;
+  max-height: 22rem;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+.move-row {
+  display: grid;
+  grid-template-columns: 2rem 1fr 1fr;
+  padding: 0.25rem;
+}
+
+.move-number {
+  color: #6b7280;
+}
+
+[aria-current="step"] {
+  background: #dcefe1;
+  border-radius: 0.25rem;
+  font-weight: 700;
+  padding: 0.1rem 0.25rem;
+}
+
+.record-controls {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.record-controls button {
+  width: 100%;
+}
+
+.record-file-actions {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.record-file-actions button,
+.upload-control {
+  font-size: 0.9rem;
+  padding: 0.5rem 0.65rem;
+}
+
+.upload-control {
+  background: #2f5d50;
+  border-radius: 0.5rem;
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+  text-align: center;
+}
+
+.record-file-actions input {
+  grid-column: 1 / -1;
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
+}
+
+.import-error {
+  color: #b91c1c;
+  font-weight: 700;
+  margin: 0;
 }
 
 .visually-hidden {
